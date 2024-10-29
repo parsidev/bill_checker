@@ -52,21 +52,19 @@ func (i *InquiryRequest) GetAmount() uint64 {
 }
 
 func (i *InquiryRequest) Validate() error {
-	billIdValid := checkBillID(splitLastDigit(i.GetBillID()))
+	billID := i.GetBillID()
+	payID := i.GetPayID()
 
-	if !billIdValid {
+	if !checkBillID(splitLastDigit(billID)) {
 		return errors.New("شناسه قبض وارد شده صحیح نمی باشد")
 	}
 
-	payIdValid := checkPayID(splitLastDigit(i.GetPayID()))
-
-	if !payIdValid {
+	splitPayID, _ := splitLastDigit(payID)
+	if !checkPayID(splitLastDigit(splitPayID)) {
 		return errors.New("شناسه پرداخت وارد شده صحیح نمی باشد")
 	}
 
-	billValid := checkBill(i.GetBillID(), i.GetPayID())
-
-	if !billValid {
+	if !checkBill(billID, payID) {
 		return errors.New("اطلاعات قبض وارد شده صحیح نمی‌ باشد")
 	}
 
