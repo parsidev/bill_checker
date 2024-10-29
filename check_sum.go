@@ -68,15 +68,7 @@ func checkPayID(payID *big.Int, control int) bool {
 }
 
 func checkBill(billID, payID *big.Int) bool {
-	var control int
-
-	billIDQuotient, billIDControl := splitLastDigit(billID)
-	billIdIsValid := checkBillID(billIDQuotient, billIDControl)
-
 	payIDQuotient, control := splitLastDigit(payID)
-	payIdIsValid := checkPayID(splitLastDigit(payIDQuotient))
 
-	bill := joinNumbers(billID, payIDQuotient)
-
-	return billIdIsValid && payIdIsValid && calculate(bill) == control
+	return calculate(joinNumbers(billID, payIDQuotient)) == control
 }

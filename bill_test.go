@@ -19,13 +19,13 @@ func TestInquiry(t *testing.T) {
 			name: "Bill Inquiry Test",
 			args: args{
 				req: &InquiryRequest{
-					BillID: "5152574430154",
-					PayID:  "82832737",
+					BillID:    "5152574430154",
+					PaymentID: "82832737",
 				},
 			},
 			wantRes: &InquiryResponse{
 				BillID:      "5152574430154",
-				PayID:       "82832737",
+				PaymentID:   "82832737",
 				Amount:      828000,
 				BillType:    BillTypeMobile,
 				BillTypeStr: BillTypeMobile.Value(),

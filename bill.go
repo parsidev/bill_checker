@@ -9,7 +9,7 @@ func Inquiry(req *InquiryRequest) (res *InquiryResponse, err error) {
 
 	return &InquiryResponse{
 		BillID:      req.BillID,
-		PayID:       req.PayID,
+		PaymentID:   req.PaymentID,
 		Amount:      req.GetAmount(),
 		BillType:    req.GetType(),
 		BillTypeStr: req.GetType().Value(),

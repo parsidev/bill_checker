@@ -1,18 +1,19 @@
 package billing
 
 import (
+	"errors"
 	"math/big"
 	"strings"
 )
 
 type InquiryRequest struct {
-	BillID string `json:"bill_id"`
-	PayID  string `json:"pay_id"`
+	BillID    string `json:"bill_id"`
+	PaymentID string `json:"payment_id"`
 }
 
 type InquiryResponse struct {
 	BillID      string   `json:"bill_id"`
-	PayID       string   `json:"pay_id"`
+	PaymentID   string   `json:"payment_id"`
 	Amount      uint64   `json:"amount"`
 	BillType    BillType `json:"bill_type"`
 	BillTypeStr string   `json:"type"`
@@ -27,7 +28,7 @@ func (i *InquiryRequest) GetBillID() *big.Int {
 
 func (i *InquiryRequest) GetPayID() *big.Int {
 	r := new(big.Int)
-	r.SetString(i.PayID, 10)
+	r.SetString(i.PaymentID, 10)
 
 	return r
 }
@@ -40,7 +41,7 @@ func (i *InquiryRequest) GetType() BillType {
 }
 
 func (i *InquiryRequest) GetAmount() uint64 {
-	payID := strings.Join([]string{strings.Repeat("0", 13-len(i.PayID)), i.PayID}, "")
+	payID := strings.Join([]string{strings.Repeat("0", 13-len(i.PaymentID)), i.PaymentID}, "")
 
 	priceStr := payID[:8]
 
@@ -50,6 +51,24 @@ func (i *InquiryRequest) GetAmount() uint64 {
 	return price.Uint64() * 1000
 }
 
-func (i *InquiryRequest) IsValid() bool {
-	return checkBill(i.GetBillID(), i.GetPayID())
+func (i *InquiryRequest) Validate() error {
+	billIdValid := checkBillID(splitLastDigit(i.GetBillID()))
+
+	if !billIdValid {
+		return errors.New("شناسه قبض وارد شده صحیح نمی باشد")
+	}
+
+	payIdValid := checkPayID(splitLastDigit(i.GetPayID()))
+
+	if !payIdValid {
+		return errors.New("شناسه پرداخت وارد شده صحیح نمی باشد")
+	}
+
+	billValid := checkBill(i.GetBillID(), i.GetPayID())
+
+	if !billValid {
+		return errors.New("اطلاعات قبض وارد شده صحیح نمی‌ باشد")
+	}
+
+	return nil
 }
