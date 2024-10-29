@@ -1,17 +1,17 @@
 package billing
 
-import "errors"
-
 func Inquiry(req *InquiryRequest) (res *InquiryResponse, err error) {
-	if !req.IsValid() {
-		return nil, errors.New("اطلاعات قبض وارد شده صحیح نمی‌ باشد")
+	if err = req.Validate(); err != nil {
+		return nil, err
 	}
 
-	return &InquiryResponse{
+	res = &InquiryResponse{
 		BillID:      req.BillID,
 		PaymentID:   req.PaymentID,
 		Amount:      req.GetAmount(),
 		BillType:    req.GetType(),
 		BillTypeStr: req.GetType().Value(),
-	}, nil
+	}
+
+	return res, nil
 }
