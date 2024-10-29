@@ -15,8 +15,8 @@ type InquiryResponse struct {
 	BillID      string   `json:"bill_id"`
 	PaymentID   string   `json:"payment_id"`
 	Amount      uint64   `json:"amount"`
-	BillType    BillType `json:"bill_type"`
-	BillTypeStr string   `json:"type"`
+	BillType    BillType `json:"type"`
+	BillTypeStr string   `json:"bill_type"`
 }
 
 func (i *InquiryRequest) GetBillID() *big.Int {
